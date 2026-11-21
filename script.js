@@ -1,1 +1,25 @@
-const button=document.getElementById('language');let english=false;button.addEventListener('click',()=>{english=!english;document.documentElement.lang=english?'en':'fa';document.documentElement.dir=english?'ltr':'rtl';document.body.classList.toggle('en',english);document.querySelectorAll('[data-fa][data-en]').forEach(el=>el.textContent=english?el.dataset.en:el.dataset.fa);button.textContent=english?'دری':'EN';});document.getElementById('year').textContent=new Date().getFullYear();
+
+document.addEventListener("DOMContentLoaded", function () {
+  const year = document.getElementById("year");
+
+  if (year) {
+    year.textContent = new Date().getFullYear();
+  }
+
+  const sections = document.querySelectorAll("section");
+
+  const observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    },
+    { threshold: 0.15 }
+  );
+
+  sections.forEach(function (section) {
+    observer.observe(section);
+  });
+});
