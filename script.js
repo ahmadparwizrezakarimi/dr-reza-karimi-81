@@ -1,527 +1,345 @@
-
-document.addEventListener("DOMContentLoaded", function () {
-  const $ = (selector, parent = document) => parent.querySelector(selector);
-  const $$ = (selector, parent = document) => [...parent.querySelectorAll(selector)];
-
-  // YEAR
-  const year = $("#year");
-  if (year) year.textContent = new Date().getFullYear();
-
-  // LANGUAGE
-  const languageButton = $("#language");
-  let english = false;
-
-  if (languageButton) {
-    languageButton.addEventListener("click", function () {
-      english = !english;
-      document.documentElement.lang = english ? "en" : "fa";
-      document.documentElement.dir = english ? "ltr" : "rtl";
-      document.body.classList.toggle("en", english);
-
-      $$("[data-fa][data-en]").forEach(element => {
-        element.textContent = english ? element.dataset.en : element.dataset.fa;
-      });
-
-      languageButton.textContent = english ? "دری" : "EN";
-    });
-  }
-
-  // CINEMATIC INTRO
-  const intro = $("#intro");
-
-  function closeIntro() {
-    if (!intro || intro.classList.contains("intro-closed")) return;
-    intro.classList.add("intro-closed");
-    setTimeout(() => intro.style.display = "none", 1200);
-  }
-
-  const enterWorld = $("#enterWorld");
-  const skipIntro = $("#skipIntro");
-
-  if (enterWorld) enterWorld.addEventListener("click", closeIntro);
-  if (skipIntro) skipIntro.addEventListener("click", closeIntro);
-
-  // SCROLL REVEAL
-  const revealElements = $$(".reveal");
-
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver((entries, currentObserver) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          currentObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-
-    revealElements.forEach(element => observer.observe(element));
-  } else {
-    revealElements.forEach(element => element.classList.add("visible"));
-  }
-
-  // GALAXY PLANETS
-  const planets = $$(".planet");
-  const planetInfo = $("#planetInfo");
-
-  planets.forEach(planet => {
-    planet.addEventListener("click", () => {
-      planets.forEach(item => item.classList.remove("active"));
-      planet.classList.add("active");
-
-      if (planetInfo) {
-        planetInfo.textContent = planet.dataset.info || "";
-        planetInfo.classList.add("visible");
+const SITE_DATA = {
+  fa: {
+    dir: "rtl",
+    splashTitle: "به جهان من خوش آمدید",
+    splashSub: "با ورود به صفحه، پروفایل یک لایک دریافت می‌کند و نشید متناسب با زبان انتخابی پخش می‌شود.",
+    enterBtn: "ورود به جهان من ✨",
+    role: "دانشجوی طب معالجوی · پوهنتون تاج",
+    name: 'احمد پرویز <span>رضا کریمی</span>',
+    bio: "در جست‌وجوی دانشی که زندگی را بهتر می‌سازد؛ میان دنیای طبابت، مطالعات دینی، زبان عربی، سنوکر، فوتبال و رؤیاهایی برای آینده.",
+    nasheedPlaying: "نشید فارسی در حال اجرا",
+    nasheedPaused: "نشید متوقف شد",
+    toggleAudio: "▶ پخش / توقف نشید",
+    likeLabel: "لایک پروفایل",
+    universeTitle: "جهان من را کشف کنید",
+    defaultDetail: "روی هر کارت بزنید تا توضیح کامل آن نمایش داده شود.",
+    cards: [
+      {
+        title: "🩺 طبابت و دانش پزشکی",
+        desc: "شناخت بدن انسان و آماده‌شدن برای خدمت صادقانه.",
+        detail: "طبابت برای من پیوند دانش علمی با اخلاق، دلسوزی و مسئولیت‌پذیری در قبال سلامت انسان‌هاست."
+      },
+      {
+        title: "📖 مطالعات دینی و عربی",
+        desc: "فهم عمیق‌تر متون، ارزش‌های معنوی و زیبایی زبان عربی.",
+        detail: "مطالعات دینی و زبان عربی افق فکری را وسیع‌تر می‌سازد و دانش را با معنا و اخلاق پیوند می‌دهد."
+      },
+      {
+        title: "🎱 سنوکر، فوتبال و مطالعه",
+        desc: "تمرکز، استراتژی، انرژی و رشد پیوسته.",
+        detail: "در کنار درس و مطالعه، سنوکر دقت و تمرکز را تقویت می‌کند و فوتبال شور و نشاط می‌آورد."
       }
-    });
+    ],
+    qaTitle: "گفت‌وگو با جهان من",
+    qaDefault: "یکی از پرسش‌های بالا را انتخاب کنید.",
+    qas: [
+      { q: "چرا طبابت؟", a: "چون می‌خواهم با علم پزشکی در خدمت تسکین درد و حفظ سلامت انسان‌ها باشم." },
+      { q: "پیوند علم و دین؟", a: "علم ابزار شناخت و خدمت است و معنویت و اخلاق جهت درست را به آن می‌دهند." },
+      { q: "شعار مسیر من؟", a: "آینده را با دانش، صبر و تلاش پیوسته می‌سازند." }
+    ],
+    connectTitle: "راه‌های ارتباط",
+    nasheedChant: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ — دانش، ایمان و تلاش برای فردایی روشن."
+  },
+  ar: {
+    dir: "rtl",
+    splashTitle: "أهلاً بك في عالمي الشخصي",
+    splashSub: "عند الدخول سيتم تسجيل إعجاب للملف الشخصي وتشغيل النشيد المناسب للغة المختارة.",
+    enterBtn: "الدخول إلى العالم ✨",
+    role: "طالب الطب البشري · جامعة تاج",
+    name: 'أحمد برويز <span>رضا كريمي</span>',
+    bio: "في طلب العلم النافع الذي يرقى بالحياة؛ بين الطب، والدراسات الدينية، واللغة العربية، والسنوكر، وكرة القدم.",
+    nasheedPlaying: "النشيد العربي قيد التشغيل",
+    nasheedPaused: "تم إيقاف النشيد",
+    toggleAudio: "▶ تشغيل / إيقاف النشيد",
+    likeLabel: "إعجاب بالملف",
+    universeTitle: "اكتشف عالمي",
+    defaultDetail: "اضغط على أي بطاقة لعرض التفاصيل الكاملة.",
+    cards: [
+      {
+        title: "🩺 الطب والعلوم الطبية",
+        desc: "فهم جسم الإنسان والاستعداد لخدمة الناس بأمانة.",
+        detail: "الطب عندي جمع بين العلم الدقيق والرحمة والأخلاق لخدمة صحة الإنسان."
+      },
+      {
+        title: "📖 الدراسات الدينية والعربية",
+        desc: "تعميق الفهم وجماليات اللغة العربية والقيم.",
+        detail: "الدراسات الدينية واللغة العربية تفتح آفاق الفكر وتمنح العلم روحاً ورسالة."
+      },
+      {
+        title: "🎱 السنوكر وكرة القدم والمطالعة",
+        desc: "تركيز، تخطيط، حيوية ونمو مستمر.",
+        detail: "السنوكر يطور التركيز والدقة، وكرة القدم تمنح الحيوية، والمطالعة تبني الفكر."
+      }
+    ],
+    qaTitle: "حوار سريع",
+    qaDefault: "اختر أحد الأسئلة بالأعلى.",
+    qas: [
+      { q: "لماذا الطب؟", a: "لأكون عوناً في تخفيف آلام الناس وحفظ صحتهم بعلم وأمانة." },
+      { q: "العلم والإيمان؟", a: "العلم نور يوضح الطريق، والقيم والإيمان يضبطان الوجهة." },
+      { q: "شعار المسير؟", a: "بالعلم والصبر والعمل المستمر تُبنى المستقبلات المشرقة." }
+    ],
+    connectTitle: "طرق التواصل",
+    nasheedChant: "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ — عِلْمٌ وَعَمَلٌ وَسَكِينَةٌ."
+  },
+  en: {
+    dir: "ltr",
+    splashTitle: "Welcome to My Digital Universe",
+    splashSub: "Entering adds a welcome like to the profile and plays the nasheed matched to your selected language.",
+    enterBtn: "Enter Universe ✨",
+    role: "Medical Student · Taj University",
+    name: 'Ahmad Parwiz <span>Reza Karimi</span>',
+    bio: "Seeking knowledge that elevates life—spanning medicine, religious studies, Arabic, snooker, football, and future vision.",
+    nasheedPlaying: "English nasheed playing",
+    nasheedPaused: "Nasheed paused",
+    toggleAudio: "▶ Play / Pause Nasheed",
+    likeLabel: "Profile Likes",
+    universeTitle: "Explore My Universe",
+    defaultDetail: "Click any card to read more details.",
+    cards: [
+      {
+        title: "🩺 Medicine & Health",
+        desc: "Understanding human biology to serve with integrity.",
+        detail: "Medicine for me unites scientific rigor with compassion and genuine care for people."
+      },
+      {
+        title: "📖 Faith & Arabic",
+        desc: "Deeper textual insight, ethics, and the richness of Arabic.",
+        detail: "Religious studies and Arabic broaden perspective and anchor knowledge in purpose."
+      },
+      {
+        title: "🎱 Snooker, Football & Reading",
+        desc: "Focus, strategy, energy, and steady growth.",
+        detail: "Snooker sharpens focus and strategy, football brings energy, and reading fuels growth."
+      }
+    ],
+    qaTitle: "Ask My Universe",
+    qaDefault: "Pick one of the prompts above.",
+    qas: [
+      { q: "Why medicine?", a: "To combine medical knowledge with compassion in service of human health." },
+      { q: "Science & values?", a: "Knowledge powers capability while ethics and faith guide purpose." },
+      { q: "Core motto?", a: "Build the future through steady learning, patience, and consistent effort." }
+    ],
+    connectTitle: "Connect",
+    nasheedChant: "In the name of God—steady learning, calm focus, and purposeful growth."
+  }
+};
+
+let currentLang = "fa";
+let likes = 1;
+let isLiked = true;
+let isPlayingNasheed = false;
+let audioCtx = null;
+let noteTimer = null;
+
+const splashEl = document.getElementById("splash");
+const enterBtn = document.getElementById("enterBtn");
+const likeBtn = document.getElementById("likeBtn");
+const likeCountEl = document.getElementById("likeCount");
+const toggleAudioBtn = document.getElementById("toggleAudioBtn");
+const audioStatusEl = document.getElementById("audioStatus");
+const themeBtn = document.getElementById("themeBtn");
+
+function spawnFloatingHeart(x, y) {
+  const heart = document.createElement("div");
+  heart.className = "heart-float";
+  heart.textContent = "❤️";
+  heart.style.left = (x || window.innerWidth * 0.72) + "px";
+  heart.style.top = (y || window.innerHeight * 0.45) + "px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 1250);
+}
+
+function speakNasheedText(text, lang) {
+  if (!("speechSynthesis" in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const msg = new SpeechSynthesisUtterance(text);
+    msg.lang = lang === "ar" ? "ar-SA" : lang === "en" ? "en-US" : "fa-IR";
+    msg.rate = 0.88;
+    msg.pitch = 0.95;
+    msg.volume = 0.75;
+    window.speechSynthesis.speak(msg);
+  } catch (_) {}
+}
+
+function startNasheed() {
+  stopNasheed();
+  isPlayingNasheed = true;
+  const d = SITE_DATA[currentLang];
+  audioStatusEl.innerHTML = `نشید پس‌زمینه: <strong>${d.nasheedPlaying}</strong>`;
+
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (AudioCtx) {
+    if (!audioCtx) audioCtx = new AudioCtx();
+    if (audioCtx.state === "suspended") {
+      audioCtx.resume().catch(() => {});
+    }
+
+    const scale = [293.66, 349.23, 440.0, 392.0, 349.23, 293.66, 220.0, 261.63];
+    let step = 0;
+
+    const triggerTone = () => {
+      if (!isPlayingNasheed || !audioCtx) return;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(scale[step % scale.length], now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.032, now + 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.55);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + 1.6);
+      step++;
+    };
+
+    triggerTone();
+    noteTimer = setInterval(triggerTone, 1450);
+  }
+
+  speakNasheedText(d.nasheedChant, currentLang);
+}
+
+function stopNasheed() {
+  isPlayingNasheed = false;
+  if (noteTimer) {
+    clearInterval(noteTimer);
+    noteTimer = null;
+  }
+  if ("speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch (_) {}
+  }
+  audioStatusEl.innerHTML = `نشید پس‌زمینه: <strong>${SITE_DATA[currentLang].nasheedPaused}</strong>`;
+}
+
+function applyLanguage(lang) {
+  currentLang = lang;
+  const d = SITE_DATA[lang];
+
+  document.documentElement.lang = lang;
+  document.documentElement.dir = d.dir;
+  document.body.setAttribute("data-lang", lang);
+
+  document.querySelectorAll("[data-lang]").forEach((btn) => {
+    btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
   });
 
-  // BACK TO TOP
-  const backTop = $("#backTop");
+  document.getElementById("splashTitle").textContent = d.splashTitle;
+  document.getElementById("splashSub").textContent = d.splashSub;
+  enterBtn.textContent = d.enterBtn;
+  document.getElementById("heroRole").textContent = d.role;
+  document.getElementById("heroName").innerHTML = d.name;
+  document.getElementById("heroBio").textContent = d.bio;
+  toggleAudioBtn.textContent = d.toggleAudio;
+  document.getElementById("likeText").textContent = d.likeLabel;
+  document.getElementById("secUniverse").textContent = d.universeTitle;
+  document.getElementById("detailPanel").textContent = d.defaultDetail;
+  document.getElementById("secQa").textContent = d.qaTitle;
+  document.getElementById("qaAnswer").textContent = d.qaDefault;
+  document.getElementById("secConnect").textContent = d.connectTitle;
 
-  if (backTop) {
-    backTop.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+  const cardsGrid = document.getElementById("cardsGrid");
+  cardsGrid.innerHTML = "";
+  d.cards.forEach((cardItem, idx) => {
+    const box = document.createElement("div");
+    box.className = "universe-card";
+    box.innerHTML = `<h3>${cardItem.title}</h3><p>${cardItem.desc}</p>`;
+    box.addEventListener("click", () => {
+      document.querySelectorAll(".universe-card").forEach((el) => el.classList.remove("active"));
+      box.classList.add("active");
+      document.getElementById("detailPanel").textContent = cardItem.detail;
     });
-  }
+    if (idx === 0) box.classList.add("active");
+    cardsGrid.appendChild(box);
+  });
 
-  // SHARE SITE
-  const shareSite = $("#shareSite");
-
-  if (shareSite) {
-    shareSite.addEventListener("click", async () => {
-      const shareData = {
-        title: document.title,
-        text: "Discover the digital universe of A.P.R.K",
-        url: window.location.href
-      };
-
-      try {
-        if (navigator.share) {
-          await navigator.share(shareData);
-        } else if (navigator.clipboard) {
-          await navigator.clipboard.writeText(window.location.href);
-          showToast("Link copied successfully");
-        } else {
-          showToast("Sharing is not supported on this browser");
-        }
-      } catch (error) {
-        if (error.name !== "AbortError") showToast("Unable to share right now");
-      }
+  const qaButtons = document.getElementById("qaButtons");
+  qaButtons.innerHTML = "";
+  d.qas.forEach((qaItem) => {
+    const btn = document.createElement("button");
+    btn.className = "chip";
+    btn.textContent = qaItem.q;
+    btn.addEventListener("click", () => {
+      document.getElementById("qaAnswer").textContent = qaItem.a;
     });
+    qaButtons.appendChild(btn);
+  });
+
+  if (isPlayingNasheed) {
+    startNasheed();
+  } else {
+    audioStatusEl.innerHTML = `نشید پس‌زمینه: <strong>${d.nasheedPaused}</strong>`;
   }
+}
 
-  // TOAST NOTIFICATIONS
-  const toast = $("#toast");
-  let toastTimer;
-
-  function showToast(message) {
-    if (!toast) return;
-    toast.textContent = message;
-    toast.classList.add("show");
-    clearTimeout(toastTimer);
-
-    toastTimer = setTimeout(() => {
-      toast.classList.remove("show");
-    }, 2800);
-  }
-
-  // SOUND CONTROL
-  const soundToggle = $("#soundToggle");
-  let soundEnabled = false;
-  let audioContext = null;
-
-  if (soundToggle) {
-    soundToggle.addEventListener("click", () => {
-      soundEnabled = !soundEnabled;
-      soundToggle.classList.toggle("active", soundEnabled);
-      soundToggle.setAttribute("aria-pressed", String(soundEnabled));
-
-      showToast(soundEnabled ? "Sound effects enabled" : "Sound effects disabled");
-
-      if (soundEnabled) {
-        try {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) {
-            audioContext = audioContext || new AudioContext();
-            if (audioContext.state === "suspended") audioContext.resume();
-          }
-        } catch (error) {
-          soundEnabled = false;
-        }
-      }
-    });
-  }
-
-  // CURSOR GLOW
-  const cursorGlow = $(".cursor-glow");
-
-  if (cursorGlow && window.matchMedia("(pointer: fine)").matches) {
-    window.addEventListener("pointermove", event => {
-      cursorGlow.style.left = event.clientX + "px";
-      cursorGlow.style.top = event.clientY + "px";
-    }, { passive: true });
-  }
-
-  // INTERACTIVE CARD TILT
-  const tiltCards = $$(".journey-card, .interest-item");
-
-  if (window.matchMedia("(pointer: fine)").matches) {
-    tiltCards.forEach(card => {
-      card.addEventListener("pointermove", event => {
-        const rect = card.getBoundingClientRect();
-        const x = (event.clientX - rect.left) / rect.width;
-        const y = (event.clientY - rect.top) / rect.height;
-
-        const rotateX = (0.5 - y) * 5;
-        const rotateY = (x - 0.5) * 5;
-
-        card.style.transform =
-          `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
-      });
-
-      card.addEventListener("pointerleave", () => {
-        card.style.transform = "";
-      });
-    });
-  }
-
-  // GALAXY CANVAS
-  const canvas = $("#universe");
-
-  if (canvas) {
-    const ctx = canvas.getContext("2d");
-
-    if (ctx) {
-      let width = 0;
-      let height = 0;
-      let stars = [];
-      let pointerX = 0;
-      let pointerY = 0;
-
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-
-      function resizeCanvas() {
-        const ratio = Math.min(window.devicePixelRatio || 1, 2);
-        width = window.innerWidth;
-        height = window.innerHeight;
-
-        canvas.width = width * ratio;
-        canvas.height = height * ratio;
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-
-        const count = Math.min(130, Math.floor((width * height) / 11000));
-
-        stars = Array.from({ length: count }, () => ({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 1.5 + 0.3,
-          speed: Math.random() * 0.25 + 0.04,
-          alpha: Math.random() * 0.65 + 0.2
-        }));
-      }
-
-      function drawUniverse() {
-        ctx.clearRect(0, 0, width, height);
-
-        stars.forEach(star => {
-          const x = star.x + pointerX * star.speed * 0.025;
-          const y = star.y + pointerY * star.speed * 0.025;
-
-          ctx.beginPath();
-          ctx.arc(x, y, star.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(220, 200, 255, ${star.alpha})`;
-          ctx.fill();
-        });
-
-        if (!reducedMotion) {
-          stars.forEach(star => {
-            star.y -= star.speed;
-
-            if (star.y < -5) {
-              star.y = height + 5;
-              star.x = Math.random() * width;
-            }
-          });
-
-          requestAnimationFrame(drawUniverse);
-        }
-      }
-
-      window.addEventListener("resize", resizeCanvas);
-
-      window.addEventListener("pointermove", event => {
-        pointerX = event.clientX - width / 2;
-        pointerY = event.clientY - height / 2;
-      }, { passive: true });
-
-      resizeCanvas();
-      drawUniverse();
-    }
-  }
-
-  // INITIALIZATION
-  document.body.classList.add("aprk-ready");
+enterBtn.addEventListener("click", (e) => {
+  splashEl.classList.add("hidden");
+  likes += 1;
+  isLiked = true;
+  likeCountEl.textContent = likes;
+  likeBtn.classList.add("liked");
+  spawnFloatingHeart(e.clientX, e.clientY);
+  startNasheed();
 });
 
-// ============================================
-// A.P.R.K — 3D DIGITAL UNIVERSE
-// ============================================
-
-(function () {
-  function startAPRKUniverse() {
-    if (!window.THREE) {
-      console.error("Three.js library not loaded.");
-      return;
-    }
-
-    const THREE = window.THREE;
-    const canvas = document.getElementById("universe");
-
-    if (!canvas || canvas.dataset.aprk3d === "active") return;
-    canvas.dataset.aprk3d = "active";
-
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x05050b);
-    scene.fog = new THREE.FogExp2(0x05050b, 0.012);
-
-    const camera = new THREE.PerspectiveCamera(
-      60,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      1000
-    );
-
-    camera.position.set(0, 4, 19);
-
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true
-    });
-
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-    // LIGHTING
-    scene.add(new THREE.AmbientLight(0xffffff, 1.4));
-
-    const centralLight = new THREE.PointLight(0xffd58a, 180, 100);
-    centralLight.position.set(0, 3, 5);
-    scene.add(centralLight);
-
-    // STAR FIELD
-    const starGeometry = new THREE.BufferGeometry();
-    const starPositions = [];
-
-    for (let i = 0; i < 2200; i++) {
-      starPositions.push(
-        (Math.random() - 0.5) * 180,
-        (Math.random() - 0.5) * 120,
-        (Math.random() - 0.5) * 100
-      );
-    }
-
-    starGeometry.setAttribute(
-      "position",
-      new THREE.Float32BufferAttribute(starPositions, 3)
-    );
-
-    const starMaterial = new THREE.PointsMaterial({
-      color: 0xd8caff,
-      size: 0.12,
-      transparent: true,
-      opacity: 0.9
-    });
-
-    const stars = new THREE.Points(starGeometry, starMaterial);
-    scene.add(stars);
-
-    // CENTRAL SUN
-    const sunGeometry = new THREE.SphereGeometry(1.8, 48, 48);
-    const sunMaterial = new THREE.MeshBasicMaterial({
-      color: 0xffd27a
-    });
-
-    const sun = new THREE.Mesh(sunGeometry, sunMaterial);
-    scene.add(sun);
-
-    // SUN GLOW
-    const glow = new THREE.Mesh(
-      new THREE.SphereGeometry(2.2, 32, 32),
-      new THREE.MeshBasicMaterial({
-        color: 0x9d63ff,
-        transparent: true,
-        opacity: 0.12,
-        side: THREE.BackSide
-      })
-    );
-
-    scene.add(glow);
-
-    // PLANETS
-    const planets = [];
-    const planetSettings = [
-      { name: "MEDICINE", color: 0x48dfff, radius: 0.65, distance: 4.5, speed: 0.35 },
-      { name: "ISLAMIC STUDIES", color: 0xe8c477, radius: 0.85, distance: 7, speed: 0.23 },
-      { name: "ARABIC", color: 0x9565ff, radius: 0.55, distance: 9.5, speed: 0.18 },
-      { name: "READING", color: 0x5ce0b5, radius: 0.7, distance: 12, speed: 0.14 },
-      { name: "SPORTS", color: 0xff7caa, radius: 0.6, distance: 14.5, speed: 0.11 }
-    ];
-
-    planetSettings.forEach((data, index) => {
-      const geometry = new THREE.SphereGeometry(data.radius, 40, 40);
-
-      const material = new THREE.MeshStandardMaterial({
-        color: data.color,
-        metalness: 0.45,
-        roughness: 0.3,
-        emissive: data.color,
-        emissiveIntensity: 0.15
-      });
-
-      const planet = new THREE.Mesh(geometry, material);
-
-      planet.userData = data;
-      planet.userData.angle = index * 1.25;
-
-      scene.add(planet);
-      planets.push(planet);
-
-      const orbit = new THREE.Mesh(
-        new THREE.RingGeometry(data.distance - 0.012, data.distance + 0.012, 160),
-        new THREE.MeshBasicMaterial({
-          color: data.color,
-          transparent: true,
-          opacity: 0.3,
-          side: THREE.DoubleSide
-        })
-      );
-
-      orbit.rotation.x = Math.PI / 2;
-      scene.add(orbit);
-    });
-
-    // TOUCH AND MOUSE CONTROL
-    let dragging = false;
-    let previousX = 0;
-    let previousY = 0;
-    let rotationX = 0;
-    let rotationY = 0;
-    let zoom = 19;
-
-    function pointerDown(event) {
-      dragging = true;
-      previousX = event.clientX;
-      previousY = event.clientY;
-    }
-
-    function pointerMove(event) {
-      if (!dragging) return;
-
-      const dx = event.clientX - previousX;
-      const dy = event.clientY - previousY;
-
-      rotationY += dx * 0.004;
-      rotationX += dy * 0.003;
-
-      rotationX = Math.max(-0.8, Math.min(0.8, rotationX));
-
-      previousX = event.clientX;
-      previousY = event.clientY;
-    }
-
-    function pointerUp() {
-      dragging = false;
-    }
-
-    renderer.domElement.addEventListener("pointerdown", pointerDown);
-    window.addEventListener("pointermove", pointerMove);
-    window.addEventListener("pointerup", pointerUp);
-
-    renderer.domElement.addEventListener("wheel", event => {
-      zoom += event.deltaY * 0.015;
-      zoom = Math.max(8, Math.min(35, zoom));
-    }, { passive: true });
-
-    // PLANET SELECTION
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    renderer.domElement.addEventListener("click", event => {
-      const rect = renderer.domElement.getBoundingClientRect();
-
-      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-      raycaster.setFromCamera(mouse, camera);
-
-      const hits = raycaster.intersectObjects(planets);
-
-      if (hits.length) {
-        const selected = hits[0].object;
-        const info = document.getElementById("planetInfo");
-
-        if (info) {
-          info.textContent = selected.userData.name;
-          info.classList.add("visible");
-        }
-      }
-    });
-
-    // ANIMATION
-    const clock = new THREE.Clock();
-
-    function animate() {
-      requestAnimationFrame(animate);
-
-      const time = clock.getElapsedTime();
-
-      sun.rotation.y += 0.002;
-      glow.scale.setScalar(1 + Math.sin(time * 1.5) * 0.035);
-
-      stars.rotation.y += 0.00012;
-
-      planets.forEach(planet => {
-        const data = planet.userData;
-
-        data.angle += data.speed * 0.003;
-
-        planet.position.x = Math.cos(data.angle) * data.distance;
-        planet.position.z = Math.sin(data.angle) * data.distance;
-        planet.position.y = Math.sin(data.angle * 2) * 0.35;
-
-        planet.rotation.y += 0.008;
-      });
-
-      scene.rotation.x += (rotationX - scene.rotation.x) * 0.04;
-      scene.rotation.y += (rotationY - scene.rotation.y) * 0.04;
-
-      camera.position.z += (zoom - camera.position.z) * 0.08;
-
-      renderer.render(scene, camera);
-    }
-
-    // RESPONSIVE
-    window.addEventListener("resize", () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    });
-
-    animate();
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", startAPRKUniverse);
+likeBtn.addEventListener("click", (e) => {
+  if (!isLiked) {
+    likes += 1;
+    isLiked = true;
+    likeBtn.classList.add("liked");
+    spawnFloatingHeart(e.clientX, e.clientY);
   } else {
-    startAPRKUniverse();
+    likes = Math.max(0, likes - 1);
+    isLiked = false;
+    likeBtn.classList.remove("liked");
   }
-})();
+  likeCountEl.textContent = likes;
+});
+
+toggleAudioBtn.addEventListener("click", () => {
+  if (isPlayingNasheed) {
+    stopNasheed();
+  } else {
+    startNasheed();
+  }
+});
+
+document.querySelectorAll("[data-lang]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    applyLanguage(btn.getAttribute("data-lang"));
+  });
+});
+
+themeBtn.addEventListener("click", () => {
+  const html = document.documentElement;
+  const nextTheme = html.getAttribute("data-theme") === "dark" ? "light" : "dark";
+  html.setAttribute("data-theme", nextTheme);
+});
+
+document.getElementById("saveVcfBtn").addEventListener("click", () => {
+  const vcard = [
+    "BEGIN:VCARD",
+    "VERSION:3.0",
+    "N:Reza Karimi;Ahmad Parwiz;;;",
+    "FN:Ahmad Parwiz Reza Karimi (_A.P.R.K_)",
+    "EMAIL:ahmadparwizrezakarimi873@gmail.com",
+    "URL:https://ahmadparwizrezakarimi.github.io/dr-reza-karimi-81/",
+    "END:VCARD"
+  ].join("\n");
+
+  const blob = new Blob([vcard], { type: "text/vcard" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "Ahmad_Parwiz_Reza_Karimi.vcf";
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+applyLanguage("fa");
