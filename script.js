@@ -1,42 +1,30 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const year = document.getElementById("year");
-  if (year) year.textContent = new Date().getFullYear();
 
-  const languageButton = document.getElementById("language");
-  let english = false;
+/* A.P.R.K 3D UNIVERSE LAYER */
+#universe {
+  position: fixed;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
 
-  if (languageButton) {
-    languageButton.addEventListener("click", function () {
-      english = !english;
-      document.documentElement.lang = english ? "en" : "fa";
-      document.documentElement.dir = english ? "ltr" : "rtl";
-      document.body.classList.toggle("en", english);
+.noise,
+.cursor-glow {
+  pointer-events: none;
+}
 
-      document.querySelectorAll("[data-fa][data-en]").forEach(function (element) {
-        element.textContent = english ? element.dataset.en : element.dataset.fa;
-      });
+.intro-screen,
+.topbar,
+main,
+footer,
+.back-top,
+.toast {
+  position: relative;
+  z-index: 2;
+}
 
-      languageButton.textContent = english ? "دری" : "EN";
-    });
-  }
-
-  const revealElements = document.querySelectorAll(".reveal");
-  if ("IntersectionObserver" in window) {
-    const observer = new IntersectionObserver(function (entries, currentObserver) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-          currentObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-
-    revealElements.forEach(function (element) {
-      observer.observe(element);
-    });
-  } else {
-    revealElements.forEach(function (element) {
-      element.classList.add("visible");
-    });
-  }
-});
+#universe {
+  touch-action: pan-y;
+}
