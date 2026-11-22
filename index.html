@@ -1,84 +1,132 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl" data-theme="dark">
+<html lang="fa" dir="rtl" data-perf="auto">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>احمد پرویز رضا کریمی | _A.P.R.K_</title>
+  <title>A.P.R.K — The Digital Universe of Ahmad Parwiz Reza Karimi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 <body data-lang="fa">
 
-  <!-- صفحه ورود سینمایی -->
-  <div id="splash">
-    <div class="splash-tag">_A.P.R.K_ · PERSONAL DIGITAL UNIVERSE</div>
-    <h1 id="splashTitle">به جهان من خوش آمدید</h1>
-    <p id="splashSub">با ورود به صفحه، پروفایل یک لایک دریافت می‌کند و نشید متناسب با زبان انتخابی پخش می‌شود.</p>
-    <button id="enterBtn" class="btn-primary">ورود به جهان من ✨</button>
-  </div>
+  <!-- مقدمه سینمایی تمام‌صفحه -->
+  <section id="introOverlay" class="intro-overlay" aria-label="مقدمه سینمایی">
+    <canvas id="introCanvas"></canvas>
+    <div class="golden-portal"></div>
+    <div class="intro-content">
+      <div class="intro-brand" id="introBrand">A.P.R.K</div>
+      <div class="intro-name" id="introName">AHMAD PARWIZ REZA KARIMI</div>
+      <p class="intro-welcome" id="introWelcome">
+        به جهان دیجیتال احمد پرویز رضا کریمی خوش آمدید · Welcome to the Digital Universe of Ahmad Parwiz Reza Karimi
+      </p>
+      <div class="intro-actions">
+        <button id="enterUniverseBtn" class="btn-gold">ENTER THE UNIVERSE · ورود به جهان</button>
+        <button id="skipIntroBtn" class="btn-obsidian">عبور از مقدمه · Skip Intro</button>
+      </div>
+    </div>
+  </section>
 
-  <!-- نوار بالا -->
+  <!-- نوار ناوبری بالا -->
   <header class="topbar">
-    <div class="brand">_A.P.R.K_</div>
-    <div class="controls">
-      <button class="chip active" data-lang="fa">فارسی</button>
-      <button class="chip" data-lang="ar">العربية</button>
-      <button class="chip" data-lang="en">English</button>
-      <button class="chip" id="themeBtn">🌗 تم</button>
+    <div class="brand-group">
+      <span class="brand-logo">A.P.R.K</span>
+      <span class="brand-sub">DIGITAL UNIVERSE</span>
+    </div>
+
+    <nav class="top-nav">
+      <a href="#galaxySection" id="navGalaxy">کهکشان 3D</a>
+      <a href="#bioSection" id="navBio">بیوگرافی</a>
+      <a href="#planetsSection" id="navPlanets">سیاره‌ها</a>
+      <a href="#contactSection" id="navContact">ارتباط</a>
+    </nav>
+
+    <div class="top-controls">
+      <button class="pill-btn active" data-lang="fa">دری / فارسی</button>
+      <button class="pill-btn" data-lang="en">EN</button>
+      <button class="pill-btn" id="nasheedToggleBtn" aria-pressed="false">♫ نشید: خاموش</button>
+      <button class="pill-btn" id="perfToggleBtn" aria-pressed="false">⚡ حالت سبک</button>
     </div>
   </header>
 
-  <main class="container">
-    <!-- بخش اول: معرفی و لایک پروفایل -->
-    <section class="hero card">
-      <div class="hero-text">
-        <div class="badge" id="heroRole">دانشجوی طب معالجوی · پوهنتون تاج</div>
-        <h1 id="heroName">احمد پرویز <span>رضا کریمی</span></h1>
-        <p id="heroBio">در جست‌وجوی دانشی که زندگی را بهتر می‌سازد؛ میان دنیای طبابت، مطالعات دینی، زبان عربی، سنوکر، فوتبال و رؤیاهایی برای آینده.</p>
+  <main class="main-shell">
+    <!-- بخش کهکشان سه‌بعدی واقعی -->
+    <section id="galaxySection" class="galaxy-panel">
+      <canvas id="galaxyCanvas"></canvas>
+      <div class="galaxy-hud">
+        <div class="hud-top">
+          <span class="hud-badge" id="hudBadge">REAL-TIME 3D GALAXY · 8 WORLDS</span>
+          <span class="hud-hint" id="hudHint">برای چرخش بکشید، برای زوم نزدیک/دور کنید و روی سیاره بزنید</span>
+        </div>
 
-        <div class="audio-box">
-          <span id="audioStatus">نشید پس‌زمینه: <strong>آماده پخش</strong></span>
-          <button class="chip" id="toggleAudioBtn">▶ پخش / توقف نشید</button>
+        <div class="hud-bottom">
+          <div class="active-planet-box">
+            <div class="planet-tag" id="activePlanetTag">PLANET 01 · BIOGRAPHY</div>
+            <h2 id="activePlanetTitle">بیوگرافی من · My Biography</h2>
+            <p id="activePlanetDesc">دانشجوی طب معالجوی در پوهنتون تاج؛ پیوند دانش پزشکی، مطالعات اسلامی، زبان عربی و رشد فردی.</p>
+          </div>
+
+          <div class="audio-strip">
+            <span id="nasheedLabel">نشید پس‌زمینه (پیش‌فرض خاموش): <strong>آماده انتخاب</strong></span>
+            <select id="nasheedTrackSelect" class="nasheed-select" aria-label="انتخاب نشید">
+              <option value="tranquil_fa">نشید آرامش · دری / عربی (ملودی ملایم)</option>
+              <option value="horizon_en">Horizon Nasheed · English / Calm</option>
+            </select>
+            <button id="nasheedPlayBtn" class="btn-gold-sm">▶ روشن کردن نشید</button>
+          </div>
         </div>
       </div>
+    </section>
 
-      <div class="profile-side">
-        <div class="avatar-ring">
-          <img src="profile.jpg" alt="عکس احمد پرویز رضا کریمی" onerror="this.style.display='none'" />
+    <!-- نوار انتخاب سریع ۸ سیاره -->
+    <section id="planetsSection" class="glass-card">
+      <div class="section-head">
+        <span class="kicker">INTERACTIVE PLANETARY NAVIGATION</span>
+        <h2 id="planetsHeading">۸ سیاره جهان دیجیتال A.P.R.K</h2>
+      </div>
+      <div id="planetSelectorGrid" class="planet-pills"></div>
+      <div id="planetDetailBox" class="planet-detail-box"></div>
+    </section>
+
+    <!-- بیوگرافی شخصی و پروفایل -->
+    <section id="bioSection" class="glass-card bio-grid">
+      <div class="bio-info">
+        <span class="kicker" id="bioKicker">PERSONAL BIOGRAPHY · A.P.R.K</span>
+        <h2 id="bioFullName">احمد پرویز رضا کریمی</h2>
+        <div class="bio-meta" id="bioMeta">محصل طب معالجوی · پوهنتون تاج (General Medicine · Taj University)</div>
+        <p id="bioParagraph1" class="bio-text"></p>
+        <p id="bioParagraph2" class="bio-text"></p>
+        <div class="phase-note" id="phaseNotice"></div>
+      </div>
+
+      <div class="profile-card-box">
+        <div class="profile-frame">
+          <img src="profile.jpg" alt="Ahmad Parwiz Reza Karimi" onerror="this.style.display='none'" />
         </div>
-        <button class="like-btn liked" id="likeBtn">
-          <span>❤️</span>
-          <span id="likeText">لایک پروفایل</span>
-          <strong id="likeCount">1</strong>
+        <div class="profile-sig">A.P.R.K</div>
+        <button id="likeUniverseBtn" class="btn-gold">
+          <span>✦</span>
+          <span id="likeBtnLabel">لایک جهان A.P.R.K</span>
+          <strong id="likeCounter">0</strong>
         </button>
       </div>
     </section>
 
-    <!-- بخش دوم: جهان من و علایق -->
-    <section class="card">
-      <h2 class="sec-title" id="secUniverse">جهان من را کشف کنید</h2>
-      <div class="grid-3" id="cardsGrid"></div>
-      <div class="detail-panel" id="detailPanel">روی هر کارت بزنید تا توضیح کامل آن نمایش داده شود.</div>
-    </section>
-
-    <!-- بخش سوم: پرسش و پاسخ -->
-    <section class="card">
-      <h2 class="sec-title" id="secQa">گفت‌وگو با جهان من</h2>
-      <div class="qa-list" id="qaButtons"></div>
-      <div class="detail-panel" id="qaAnswer">یکی از پرسش‌های بالا را انتخاب کنید.</div>
-    </section>
-
-    <!-- بخش چهارم: ارتباط -->
-    <section class="card">
-      <h2 class="sec-title" id="secConnect">راه‌های ارتباط</h2>
-      <div class="links">
-        <a class="link-chip" href="https://wa.me/message/HN5M25RKQO33K1" target="_blank" rel="noopener">WhatsApp</a>
-        <a class="link-chip" href="https://www.facebook.com/ahmad.parwiz.1848?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook</a>
-        <a class="link-chip" href="https://www.instagram.com/dr_reza_karimi81/?evlk=eGp2YWdleHNzOXc0&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
-        <a class="link-chip" href="mailto:ahmadparwizrezakarimi873@gmail.com">Email</a>
-        <button class="chip" id="saveVcfBtn">📇 ذخیره مخاطب (.vcf)</button>
+    <!-- کارت تماس دیجیتال و شبکه‌های اجتماعی -->
+    <section id="contactSection" class="glass-card">
+      <div class="section-head">
+        <span class="kicker">DIGITAL CONTACT & CONNECT</span>
+        <h2 id="contactHeading">ارتباط با احمد پرویز رضا کریمی</h2>
+      </div>
+      <div class="contact-row">
+        <a class="social-link" href="https://wa.me/message/HN5M25RKQO33K1" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="social-link" href="https://www.facebook.com/ahmad.parwiz.1848?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook</a>
+        <a class="social-link" href="https://www.instagram.com/dr_reza_karimi81/?evlk=eGp2YWdleHNzOXc0&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
+        <a class="social-link" href="mailto:ahmadparwizrezakarimi873@gmail.com">Email</a>
+        <button id="downloadVcardBtn" class="btn-obsidian">⬇ دانلود کارت تماس (.vcf)</button>
       </div>
     </section>
   </main>
