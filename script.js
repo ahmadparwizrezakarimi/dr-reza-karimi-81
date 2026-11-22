@@ -267,3 +267,261 @@ document.addEventListener("DOMContentLoaded", function () {
   // INITIALIZATION
   document.body.classList.add("aprk-ready");
 });
+
+// ============================================
+// A.P.R.K — 3D DIGITAL UNIVERSE
+// ============================================
+
+(function () {
+  function startAPRKUniverse() {
+    if (!window.THREE) {
+      console.error("Three.js library not loaded.");
+      return;
+    }
+
+    const THREE = window.THREE;
+    const canvas = document.getElementById("universe");
+
+    if (!canvas || canvas.dataset.aprk3d === "active") return;
+    canvas.dataset.aprk3d = "active";
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x05050b);
+    scene.fog = new THREE.FogExp2(0x05050b, 0.012);
+
+    const camera = new THREE.PerspectiveCamera(
+      60,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+
+    camera.position.set(0, 4, 19);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true
+    });
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    // LIGHTING
+    scene.add(new THREE.AmbientLight(0xffffff, 1.4));
+
+    const centralLight = new THREE.PointLight(0xffd58a, 180, 100);
+    centralLight.position.set(0, 3, 5);
+    scene.add(centralLight);
+
+    // STAR FIELD
+    const starGeometry = new THREE.BufferGeometry();
+    const starPositions = [];
+
+    for (let i = 0; i < 2200; i++) {
+      starPositions.push(
+        (Math.random() - 0.5) * 180,
+        (Math.random() - 0.5) * 120,
+        (Math.random() - 0.5) * 100
+      );
+    }
+
+    starGeometry.setAttribute(
+      "position",
+      new THREE.Float32BufferAttribute(starPositions, 3)
+    );
+
+    const starMaterial = new THREE.PointsMaterial({
+      color: 0xd8caff,
+      size: 0.12,
+      transparent: true,
+      opacity: 0.9
+    });
+
+    const stars = new THREE.Points(starGeometry, starMaterial);
+    scene.add(stars);
+
+    // CENTRAL SUN
+    const sunGeometry = new THREE.SphereGeometry(1.8, 48, 48);
+    const sunMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffd27a
+    });
+
+    const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+    scene.add(sun);
+
+    // SUN GLOW
+    const glow = new THREE.Mesh(
+      new THREE.SphereGeometry(2.2, 32, 32),
+      new THREE.MeshBasicMaterial({
+        color: 0x9d63ff,
+        transparent: true,
+        opacity: 0.12,
+        side: THREE.BackSide
+      })
+    );
+
+    scene.add(glow);
+
+    // PLANETS
+    const planets = [];
+    const planetSettings = [
+      { name: "MEDICINE", color: 0x48dfff, radius: 0.65, distance: 4.5, speed: 0.35 },
+      { name: "ISLAMIC STUDIES", color: 0xe8c477, radius: 0.85, distance: 7, speed: 0.23 },
+      { name: "ARABIC", color: 0x9565ff, radius: 0.55, distance: 9.5, speed: 0.18 },
+      { name: "READING", color: 0x5ce0b5, radius: 0.7, distance: 12, speed: 0.14 },
+      { name: "SPORTS", color: 0xff7caa, radius: 0.6, distance: 14.5, speed: 0.11 }
+    ];
+
+    planetSettings.forEach((data, index) => {
+      const geometry = new THREE.SphereGeometry(data.radius, 40, 40);
+
+      const material = new THREE.MeshStandardMaterial({
+        color: data.color,
+        metalness: 0.45,
+        roughness: 0.3,
+        emissive: data.color,
+        emissiveIntensity: 0.15
+      });
+
+      const planet = new THREE.Mesh(geometry, material);
+
+      planet.userData = data;
+      planet.userData.angle = index * 1.25;
+
+      scene.add(planet);
+      planets.push(planet);
+
+      const orbit = new THREE.Mesh(
+        new THREE.RingGeometry(data.distance - 0.012, data.distance + 0.012, 160),
+        new THREE.MeshBasicMaterial({
+          color: data.color,
+          transparent: true,
+          opacity: 0.3,
+          side: THREE.DoubleSide
+        })
+      );
+
+      orbit.rotation.x = Math.PI / 2;
+      scene.add(orbit);
+    });
+
+    // TOUCH AND MOUSE CONTROL
+    let dragging = false;
+    let previousX = 0;
+    let previousY = 0;
+    let rotationX = 0;
+    let rotationY = 0;
+    let zoom = 19;
+
+    function pointerDown(event) {
+      dragging = true;
+      previousX = event.clientX;
+      previousY = event.clientY;
+    }
+
+    function pointerMove(event) {
+      if (!dragging) return;
+
+      const dx = event.clientX - previousX;
+      const dy = event.clientY - previousY;
+
+      rotationY += dx * 0.004;
+      rotationX += dy * 0.003;
+
+      rotationX = Math.max(-0.8, Math.min(0.8, rotationX));
+
+      previousX = event.clientX;
+      previousY = event.clientY;
+    }
+
+    function pointerUp() {
+      dragging = false;
+    }
+
+    renderer.domElement.addEventListener("pointerdown", pointerDown);
+    window.addEventListener("pointermove", pointerMove);
+    window.addEventListener("pointerup", pointerUp);
+
+    renderer.domElement.addEventListener("wheel", event => {
+      zoom += event.deltaY * 0.015;
+      zoom = Math.max(8, Math.min(35, zoom));
+    }, { passive: true });
+
+    // PLANET SELECTION
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    renderer.domElement.addEventListener("click", event => {
+      const rect = renderer.domElement.getBoundingClientRect();
+
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+
+      const hits = raycaster.intersectObjects(planets);
+
+      if (hits.length) {
+        const selected = hits[0].object;
+        const info = document.getElementById("planetInfo");
+
+        if (info) {
+          info.textContent = selected.userData.name;
+          info.classList.add("visible");
+        }
+      }
+    });
+
+    // ANIMATION
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const time = clock.getElapsedTime();
+
+      sun.rotation.y += 0.002;
+      glow.scale.setScalar(1 + Math.sin(time * 1.5) * 0.035);
+
+      stars.rotation.y += 0.00012;
+
+      planets.forEach(planet => {
+        const data = planet.userData;
+
+        data.angle += data.speed * 0.003;
+
+        planet.position.x = Math.cos(data.angle) * data.distance;
+        planet.position.z = Math.sin(data.angle) * data.distance;
+        planet.position.y = Math.sin(data.angle * 2) * 0.35;
+
+        planet.rotation.y += 0.008;
+      });
+
+      scene.rotation.x += (rotationX - scene.rotation.x) * 0.04;
+      scene.rotation.y += (rotationY - scene.rotation.y) * 0.04;
+
+      camera.position.z += (zoom - camera.position.z) * 0.08;
+
+      renderer.render(scene, camera);
+    }
+
+    // RESPONSIVE
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    });
+
+    animate();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startAPRKUniverse);
+  } else {
+    startAPRKUniverse();
+  }
+})();
