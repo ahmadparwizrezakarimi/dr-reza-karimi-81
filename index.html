@@ -1,136 +1,88 @@
-<!doctype html>
-<html lang="fa" dir="rtl">
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="dark">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#050505">
-<meta name="description" content="جهان دیجیتالی احمد پرویز رضا کریمی؛ دانشجوی طب معالجوی، علاقه‌مند به مطالعات دینی، زبان عربی و دانش.">
-<title>_A.P.R.K_ — جهان احمد پرویز رضا کریمی</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>احمد پرویز رضا کریمی | _A.P.R.K_</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-<canvas id="universe" aria-hidden="true"></canvas>
-<div class="noise" aria-hidden="true"></div>
-<div class="cursor-glow" aria-hidden="true"></div>
+<body data-lang="fa">
 
-<div class="intro-screen" id="intro">
-  <div class="intro-orbit orbit-a"></div><div class="intro-orbit orbit-b"></div>
-  <div class="intro-core"><span class="intro-mark">_A.P.R.K_</span><i></i></div>
-  <p class="intro-kicker">A PERSONAL DIGITAL UNIVERSE</p>
-  <h1>به جهان من خوش آمدید</h1>
-  <p class="intro-sub">جایی میان دانش، اندیشه و رؤیا</p>
-  <button class="enter-button" id="enterWorld">ورود به جهان من <span>↗</span></button>
-  <button class="skip-button" id="skipIntro">عبور از مقدمه</button>
-  <div class="intro-bottom">AHMAD PARWIZ REZA KARIMI · 2026</div>
-</div>
-
-<header class="topbar">
-  <a class="brand" href="#home">_A.P.R.K_</a>
-  <nav>
-    <a href="#about">داستان من</a><a href="#journey">مسیر من</a><a href="#universe-sections">جهان من</a><a href="#interests">علاقه‌ها</a><a href="#contact">ارتباط</a>
-  </nav>
-  <div class="top-actions">
-    <button class="icon-btn" id="soundToggle" aria-label="کنترل صدا" title="صدا خاموش است">♫</button>
-    <button class="lang-btn" id="language">EN</button>
+  <!-- صفحه ورود سینمایی -->
+  <div id="splash">
+    <div class="splash-tag">_A.P.R.K_ · PERSONAL DIGITAL UNIVERSE</div>
+    <h1 id="splashTitle">به جهان من خوش آمدید</h1>
+    <p id="splashSub">با ورود به صفحه، پروفایل یک لایک دریافت می‌کند و نشید متناسب با زبان انتخابی پخش می‌شود.</p>
+    <button id="enterBtn" class="btn-primary">ورود به جهان من ✨</button>
   </div>
-</header>
 
-<main>
-<section class="hero scene" id="home">
-  <div class="hero-stars"></div>
-  <div class="hero-copy reveal">
-    <p class="eyebrow"><span class="pulse-dot"></span> PERSONAL DIGITAL UNIVERSE</p>
-    <h1>احمد پرویز<br><em>رضا کریمی</em></h1>
-    <p class="hero-role">دانشجوی طب معالجوی <b>·</b> پوهنتون تاج</p>
-    <p class="hero-intro">در جست‌وجوی دانشی که زندگی را بهتر می‌سازد؛ میان دنیای طبابت، مطالعات دینی، زبان عربی و رؤیاهایی که برای آینده دارم.</p>
-    <div class="hero-buttons"><a class="gold-button" href="#universe-sections">کشف جهان من <span>↗</span></a><a class="quiet-link" href="#about">داستانم را بخوانید</a></div>
-    <div class="hero-index"><span>01 / 05</span><i></i><span>SCROLL TO EXPLORE</span></div>
-  </div>
-  <div class="portrait-stage reveal">
-    <div class="portrait-halo"></div><div class="portrait-ring ring-one"></div><div class="portrait-ring ring-two"></div>
-    <div class="portrait-frame"><img src="profile.jpg" alt="عکس احمد پرویز رضا کریمی" onerror="this.style.display='none';this.parentElement.classList.add('no-photo')"><div class="photo-fallback"><span>_A.P.R.K_</span><small>YOUR STORY · YOUR UNIVERSE</small></div></div>
-    <div class="floating-label label-top">THE HUMAN JOURNEY <b>✦</b></div>
-    <div class="floating-label label-bottom"><b>✦</b> KNOWLEDGE & PURPOSE</div>
-  </div>
-  <div class="vertical-note">A JOURNEY OF KNOWLEDGE — EST. 2026</div>
-</section>
-
-<section class="manifesto section reveal" id="about">
-  <div class="section-no">01 <span>— ABOUT</span></div>
-  <div class="manifesto-grid">
-    <div><p class="eyebrow">MY STORY · داستان من</p><h2>هر مسیر بزرگی،<br><em>با یک اندیشه آغاز می‌شود.</em></h2></div>
-    <div class="story-copy">
-      <p>من احمد پرویز رضا کریمی هستم؛ دانشجوی طب معالجوی در پوهنتون تاج. باور دارم زندگی ارزشمند با آگاهی، هدف و تلاش معنا پیدا می‌کند.</p>
-      <p>برای من طبابت تنها آموختن بیماری‌ها و روش‌های درمان نیست؛ سفری است برای شناخت شگفتی‌های بدن انسان، درک رنج دیگران و آماده‌شدن برای خدمت صادقانه به انسان‌ها. می‌خواهم دانش پزشکی را با اخلاق، تعهد و مسئولیت‌پذیری همراه سازم.</p>
-      <p>در کنار علوم پزشکی، مطالعات دینی و زبان عربی جایگاه ویژه‌ای در علایق من دارند. مطالعه برایم راهی است برای گسترش افق فکری، عمیق‌تر اندیشیدن و پیوندزدن دانش با ارزش‌های انسانی.</p>
-      <div class="signature">_A.P.R.K_ <small>LEARN · GROW · SERVE</small></div>
+  <!-- نوار بالا -->
+  <header class="topbar">
+    <div class="brand">_A.P.R.K_</div>
+    <div class="controls">
+      <button class="chip active" data-lang="fa">فارسی</button>
+      <button class="chip" data-lang="ar">العربية</button>
+      <button class="chip" data-lang="en">English</button>
+      <button class="chip" id="themeBtn">🌗 تم</button>
     </div>
-  </div>
-</section>
+  </header>
 
-<section class="journey section reveal" id="journey">
-  <div class="section-no">02 <span>— THE JOURNEY</span></div>
-  <div class="section-heading"><p class="eyebrow">THE PATH I CHOOSE</p><h2>مسیر من؛ <em>سه افق، یک هدف</em></h2><p>رشد پیوسته در دانش، اندیشه و شخصیت.</p></div>
-  <div class="journey-cards">
-    <article class="journey-card"><div class="card-symbol">✧</div><span class="card-no">01 / MEDICINE</span><h3>طبابت و دانش پزشکی</h3><p>شناخت بدن انسان، یادگیری علوم طبی و آماده‌شدن برای خدمت به سلامت و زندگی انسان‌ها.</p><div class="card-line"></div></article>
-    <article class="journey-card"><div class="card-symbol">۞</div><span class="card-no">02 / FAITH & LANGUAGE</span><h3>مطالعات دینی و زبان عربی</h3><p>علاقه به مطالعهٔ آموزه‌های اسلامی، گسترش دانش دینی و آموختن زبان عربی برای فهم عمیق‌تر متون.</p><div class="card-line"></div></article>
-    <article class="journey-card"><div class="card-symbol">⌁</div><span class="card-no">03 / PERSONAL GROWTH</span><h3>رشد فردی و مطالعه</h3><p>ساختن شخصیتی منظم، کنجکاو و مسئولیت‌پذیر؛ با یادگیری همیشگی و تلاش آرام اما پیوسته.</p><div class="card-line"></div></article>
-  </div>
-</section>
+  <main class="container">
+    <!-- بخش اول: معرفی و لایک پروفایل -->
+    <section class="hero card">
+      <div class="hero-text">
+        <div class="badge" id="heroRole">دانشجوی طب معالجوی · پوهنتون تاج</div>
+        <h1 id="heroName">احمد پرویز <span>رضا کریمی</span></h1>
+        <p id="heroBio">در جست‌وجوی دانشی که زندگی را بهتر می‌سازد؛ میان دنیای طبابت، مطالعات دینی، زبان عربی، سنوکر، فوتبال و رؤیاهایی برای آینده.</p>
 
-<section class="galaxy-section section reveal" id="universe-sections">
-  <div class="section-no">03 <span>— MY UNIVERSE</span></div>
-  <div class="section-heading"><p class="eyebrow">EXPLORE THE CONSTELLATION</p><h2>جهان من را <em>کشف کنید</em></h2><p>هر ستاره، بخشی از علایق و مسیر زندگی من است. برای دیدن توضیحات، انتخاب کنید.</p></div>
-  <div class="galaxy-map">
-    <div class="galaxy-orbit go-one"></div><div class="galaxy-orbit go-two"></div><div class="galaxy-orbit go-three"></div>
-    <button class="planet planet-med" data-title="قلمرو طبابت" data-desc="طبابت برای من مسیر شناخت بدن انسان، یادگیری علمی و خدمت مسئولانه به بیماران و جامعه است."><span>✚</span><b>طبابت</b></button>
-    <button class="planet planet-faith" data-title="قلمرو مطالعات دینی" data-desc="مطالعات دینی و آشنایی عمیق‌تر با آموزه‌های اسلامی از علاقه‌های مهم من است."><span>۞</span><b>مطالعات دینی</b></button>
-    <button class="planet planet-arabic" data-title="زبان عربی" data-desc="یادگیری زبان عربی را راهی برای فهم بهتر متون و گسترش دانش خود می‌دانم."><span>ع</span><b>زبان عربی</b></button>
-    <button class="planet planet-reading" data-title="مطالعه و یادگیری" data-desc="مطالعه، پایهٔ رشد علمی و فکری من است؛ همواره می‌خواهم چیز تازه‌ای بیاموزم."><span>▤</span><b>مطالعه</b></button>
-    <button class="planet planet-sports" data-title="ورزش و سرگرمی" data-desc="فوتبال و سنوکر از علاقه‌مندی‌های من در کنار درس و مطالعه هستند."><span>◉</span><b>فوتبال و سنوکر</b></button>
-    <div class="galaxy-center"><span>_A.P.R.K_</span><small>MY UNIVERSE</small></div>
-  </div>
-  <div class="planet-info" id="planetInfo" aria-live="polite"><span class="info-star">✦</span><div><b>یک ستاره را انتخاب کنید</b><p>برای کشف هر قلمرو روی یکی از سیاره‌ها لمس کنید.</p></div></div>
-</section>
+        <div class="audio-box">
+          <span id="audioStatus">نشید پس‌زمینه: <strong>آماده پخش</strong></span>
+          <button class="chip" id="toggleAudioBtn">▶ پخش / توقف نشید</button>
+        </div>
+      </div>
 
-<section class="interests section reveal" id="interests">
-  <div class="section-no">04 <span>— BEYOND THE BOOKS</span></div>
-  <div class="interest-layout">
-    <div><p class="eyebrow">LIFE IN BALANCE</p><h2>علاقه‌هایی<br><em>فراتر از درس</em></h2><p class="interest-lead">در کنار مسیر علمی، لحظه‌هایی برای شور، تمرکز و آرامش نیز ارزشمند اند.</p></div>
-    <div class="interest-list">
-      <div class="interest-item"><span class="interest-icon">◉</span><div><b>سنوکر</b><small>SNOOKER · تمرکز، دقت و استراتژی</small></div><span class="interest-arrow">↗</span></div>
-      <div class="interest-item"><span class="interest-icon">⚽</span><div><b>فوتبال</b><small>FOOTBALL · انرژی و هیجان</small></div><span class="interest-arrow">↗</span></div>
-      <div class="interest-item"><span class="interest-icon">▤</span><div><b>مطالعه و کتاب</b><small>READING · رشد و کشف اندیشه‌ها</small></div><span class="interest-arrow">↗</span></div>
-      <div class="interest-item"><span class="interest-icon">ع</span><div><b>زبان عربی</b><small>ARABIC · یادگیری و فهم عمیق‌تر</small></div><span class="interest-arrow">↗</span></div>
-    </div>
-  </div>
-</section>
+      <div class="profile-side">
+        <div class="avatar-ring">
+          <img src="profile.jpg" alt="عکس احمد پرویز رضا کریمی" onerror="this.style.display='none'" />
+        </div>
+        <button class="like-btn liked" id="likeBtn">
+          <span>❤️</span>
+          <span id="likeText">لایک پروفایل</span>
+          <strong id="likeCount">1</strong>
+        </button>
+      </div>
+    </section>
 
-<section class="vision section reveal">
-  <div class="vision-inner"><p class="eyebrow">A NOTE TO THE FUTURE</p><div class="quote-mark">“</div><h2>آینده را با آرزوهای تنها نمی‌سازند؛<br><em>با دانش، صبر و تلاش پیوسته می‌سازند.</em></h2><p>آموختن، رشدکردن و مفیدبودن برای دیگران.</p><span class="vision-sign">_A.P.R.K_</span></div>
-</section>
+    <!-- بخش دوم: جهان من و علایق -->
+    <section class="card">
+      <h2 class="sec-title" id="secUniverse">جهان من را کشف کنید</h2>
+      <div class="grid-3" id="cardsGrid"></div>
+      <div class="detail-panel" id="detailPanel">روی هر کارت بزنید تا توضیح کامل آن نمایش داده شود.</div>
+    </section>
 
-<section class="contact section reveal" id="contact">
-  <div class="section-no">05 <span>— CONNECT</span></div>
-  <p class="eyebrow">LET'S CONNECT</p><h2>راهی برای <em>ارتباط</em></h2><p class="contact-intro">برای آشنایی، گفت‌وگو و ارتباط از راه‌های زیر با من در تماس شوید.</p>
-  <div class="social-grid">
-    <a href="https://wa.me/message/HN5M25RKQO33K1" target="_blank" rel="noopener noreferrer"><span>WA</span><b>WhatsApp</b><small>پیام مستقیم</small><i>↗</i></a>
-    <a href="https://www.facebook.com/ahmad.parwiz.1848?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><span>f</span><b>Facebook</b><small>صفحهٔ اجتماعی</small><i>↗</i></a>
-    <a href="https://www.instagram.com/dr_reza_karimi81/?evlk=eGp2YWdleHNzOXc0&utm_source=qr" target="_blank" rel="noopener noreferrer"><span>◎</span><b>Instagram</b><small>دنبال‌کردن</small><i>↗</i></a>
-    <a href="mailto:ahmadparwizrezakarimi873@gmail.com"><span>@</span><b>Email</b><small>ارتباط ایمیلی</small><i>↗</i></a>
-  </div>
-  <button class="share-button" id="shareSite">اشتراک‌گذاری این جهان <span>↗</span></button>
-</section>
-</main>
+    <!-- بخش سوم: پرسش و پاسخ -->
+    <section class="card">
+      <h2 class="sec-title" id="secQa">گفت‌وگو با جهان من</h2>
+      <div class="qa-list" id="qaButtons"></div>
+      <div class="detail-panel" id="qaAnswer">یکی از پرسش‌های بالا را انتخاب کنید.</div>
+    </section>
 
-<footer><span>© <span id="year"></span> AHMAD PARWIZ REZA KARIMI</span><span class="footer-mark">_A.P.R.K_</span><span>BUILT WITH PURPOSE · KNOWLEDGE · VISION</span></footer>
+    <!-- بخش چهارم: ارتباط -->
+    <section class="card">
+      <h2 class="sec-title" id="secConnect">راه‌های ارتباط</h2>
+      <div class="links">
+        <a class="link-chip" href="https://wa.me/message/HN5M25RKQO33K1" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="link-chip" href="https://www.facebook.com/ahmad.parwiz.1848?mibextid=wwXIfr" target="_blank" rel="noopener">Facebook</a>
+        <a class="link-chip" href="https://www.instagram.com/dr_reza_karimi81/?evlk=eGp2YWdleHNzOXc0&utm_source=qr" target="_blank" rel="noopener">Instagram</a>
+        <a class="link-chip" href="mailto:ahmadparwizrezakarimi873@gmail.com">Email</a>
+        <button class="chip" id="saveVcfBtn">📇 ذخیره مخاطب (.vcf)</button>
+      </div>
+    </section>
+  </main>
 
-<button class="back-top" id="backTop" aria-label="بازگشت به بالا">↑</button>
-<div class="toast" id="toast" role="status"></div>
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
